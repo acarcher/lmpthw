@@ -8,7 +8,8 @@ import os
 import glob
 import subprocess
 
-if __name__ == "__main__":
+
+def parse_args():
     ap = argparse.ArgumentParser()
 
     ap.add_argument("directory", nargs=1, help="directory to search")
@@ -19,14 +20,29 @@ if __name__ == "__main__":
     ap.add_argument("--print", action="store_true", help="print full file name")
     ap.add_argument("--exec", nargs="*", help="print full file name")
 
-    args = vars(ap.parse_args())
+    return vars(ap.parse_args())
 
-    for dirpath, dirnames, filenames in os.walk(args["directory"][0]):
 
-        print(dirpath)
+def walk_dir(directory):
+    results = []
+
+    for dirpath, _, filenames in os.walk(directory):
+        results.append(dirpath)
 
         for file in filenames:
-            print(os.path.join(dirpath, file))
+            results.append(os.path.join(dirpath, file))
+
+    return results
+
+
+if __name__ == "__main__":
+
+    args = parse_args()
+
+    contents = walk_dir(args["directory"][0])
+
+    for result in contents:
+        print(result)
 
     # for entry in glob.glob(".*", recursive=True):
     #     print(entry)
